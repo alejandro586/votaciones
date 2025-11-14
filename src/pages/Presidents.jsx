@@ -1,6 +1,7 @@
 // src/pages/Presidents.jsx
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { guardarVoto } from '../utils/votacionUtils'; // ← NUEVO
 
 const candidatos = [
   { id: 1, nombre: "Keiko Fujimori", partido: "Fuerza Popular", imagen: "keiko.jpg" },
@@ -19,7 +20,6 @@ export default function Presidents() {
   const userData = JSON.parse(localStorage.getItem("userData") || "{}");
   const distrito = userData.distrito || "Desconocido";
 
-  // === VERIFICAR SI YA VOTÓ PRESIDENTE ===
   useEffect(() => {
     const voted = localStorage.getItem(`presidentes_voted_${dni}`);
     if (voted) {
@@ -33,6 +33,9 @@ export default function Presidents() {
       setError("Debes seleccionar un candidato");
       return;
     }
+
+    // ← NUEVO: GUARDA EN GLOBAL
+    guardarVoto('presidentes', selected.nombre);
 
     const voto = {
       tipo: "Presidente",
@@ -64,39 +67,32 @@ export default function Presidents() {
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
             </svg>
           </div>
-          <h2 className="text-2xl font-montserrat font-bold text-green-600 mb-2">¡Voto Registrado!</h2>
-          <p className="text-gray-600">Has votado por:</p>
-          <p className="text-xl font-bold text-blue-600 mt-1">{selected?.nombre}</p>
-          <p className="text-sm text-gray-500 mt-3">Redirigiendo a Mesa Directiva...</p>
+          <h2 className="text-2xl font-montserrat font-bold text-green-700">¡Voto Registrado!</h2>
+          <p className="text-gray-600 mt-2">Tu voto por <strong>{selected?.nombre}</strong> ha sido guardado.</p>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-white p-6">
-      <div className="max-w-5xl mx-auto">
-        <div className="text-center mb-8">
-          <h1 className="text-4xl font-montserrat font-black text-blue-600 mb-2">
-            Elección Presidencial
-          </h1>
-          <p className="text-lg text-gray-600">
-            Distrito: <strong>{distrito}</strong> | DNI: <strong>{dni}</strong>
-          </p>
-        </div>
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 p-6">
+      <div className="max-w-4xl mx-auto">
+        <h1 className="text-4xl font-montserrat font-bold text-center text-indigo-800 mb-8">
+          Votación Presidencial
+        </h1>
 
         {error && (
-          <div className="bg-red-50 border border-red-200 text-red-600 p-4 rounded-xl mb-6 text-center">
+          <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded-xl mb-6 text-center">
             {error}
           </div>
         )}
 
-        <div className="grid md:grid-cols-2 gap-6">
+        <div className="grid gap-6 md:grid-cols-2">
           {candidatos.map((candidato) => (
             <div
               key={candidato.id}
-              onClick={() => setSelected(candidato)}
-              className={`bg-white p-6 rounded-2xl shadow-xl cursor-pointer transition-all border-4 ${
+              onClick={() => !confirmed && setSelected(candidato)}
+              className={`cursor-pointer transition-all duration-300 p-6 rounded-2xl border-4 ${
                 selected?.id === candidato.id
                   ? "border-blue-600 shadow-2xl scale-105"
                   : "border-gray-200 hover:border-blue-300 hover:shadow-lg"

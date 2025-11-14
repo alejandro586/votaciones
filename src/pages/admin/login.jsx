@@ -37,9 +37,9 @@ export default function Login() {
 
     setTimeout(() => {
       if (admin.rol === "superadmin") {
-        navigate("/admin/panel_de_superadmin");
+        navigate("/admin/panel");
       } else {
-        navigate("/admin/panel_de_admin"); // ← MISMO PANEL, FILTRA POR DISTRITO
+        navigate("/admin/normal"); // ← MISMO PANEL, FILTRA POR DISTRITO
       }
     }, 1000);
   };

@@ -1,7 +1,7 @@
 // src/App.jsx
 import { Routes, Route } from "react-router-dom";
 
-// PÁGINAS PÚBLICAS
+// === RUTAS VOTANTE ===
 import Welcome from "./pages/Welcome";
 import DniRegister from "./pages/DniRegister";
 import VoterSelection from "./pages/VoterSelection";
@@ -9,33 +9,52 @@ import Presidents from "./pages/Presidents";
 import RoundTable from "./pages/RoundTable";
 import Mayors from "./pages/Mayors";
 
-// PÁGINAS ADMIN
-import Login from "./pages/admin/login";
-import PanelDeAdmin from "./pages/admin/panel_de_admin";
+// === RUTAS ADMIN ===
+import LoginAdmin from "./pages/admin/login"; // Login para admin
 import PanelDeSuperAdmin from "./pages/admin/panel_de_superadmin";
+import PanelDeAdmin from "./pages/admin/panel_de_admin";
+import Electores from "./pages/admin/electores";
+import Votaciones from "./pages/admin/votaciones";
+import Reportes from "./pages/admin/reportes";
+import Configuracion from "./pages/admin/configuracion";
 
-function App() {
+// === LAYOUTS ===
+import AdminLayout from "./layouts/AdminLayout";
+import ProtectedAdminRoute from "./layouts/ProtectedAdminRoute";
+
+export default function App() {
   return (
-    <div className="min-h-screen bg-gray-50">
-      <Routes>
-        {/* PÚBLICAS */}
-        <Route path="/" element={<Welcome />} />
-        <Route path="/dni" element={<DniRegister />} />
-        <Route path="/seleccion" element={<VoterSelection />} />
-        <Route path="/presidentes" element={<Presidents />} />
-        <Route path="/mesa-redonda" element={<RoundTable />} />
-        <Route path="/alcaldes" element={<Mayors />} />
+    <Routes>
+      {/* ===================== */}
+      {/* RUTAS VOTANTE */}
+      {/* ===================== */}
+      <Route path="/" element={<Welcome />} />  // Landing page
+      <Route path="/dni" element={<DniRegister />} />  // Registro DNI
+      <Route path="/seleccion" element={<VoterSelection />} />  // Selección de voto
+      <Route path="/presidentes" element={<Presidents />} />  // Voto presidentes
+      <Route path="/mesa-redonda" element={<RoundTable />} />  // Voto mesa
+      <Route path="/alcaldes" element={<Mayors />} />  // Voto alcaldes
 
-        {/* ADMIN */}
-        <Route path="/admin/login" element={<Login />} />
-        <Route path="/admin/panel_de_admin" element={<PanelDeAdmin />} />
-        <Route path="/admin/panel_de_superadmin" element={<PanelDeSuperAdmin />} />
+      {/* ===================== */}
+      {/* RUTAS ADMIN */}
+      {/* ===================== */}
 
-        {/* POR DEFECTO */}
-        <Route path="*" element={<Welcome />} />
-      </Routes>
-    </div>
+      {/* LOGIN ADMIN */}
+      <Route path="/admin/login" element={<LoginAdmin />} />
+
+      {/* ADMIN NORMAL (SIN SIDEBAR) */}
+      <Route path="/admin/normal" element={<PanelDeAdmin />} />
+
+      {/* SUPERADMIN (CON SIDEBAR, PROTEGIDO) */}
+      <Route element={<ProtectedAdminRoute />}>
+        <Route element={<AdminLayout />}>
+          <Route path="/admin/panel" element={<PanelDeSuperAdmin />} />
+          <Route path="/admin/electores" element={<Electores />} />
+          <Route path="/admin/votaciones" element={<Votaciones />} />
+          <Route path="/admin/reportes" element={<Reportes />} />
+          <Route path="/admin/configuracion" element={<Configuracion />} />
+        </Route>
+      </Route>
+    </Routes>
   );
 }
-
-export default App;
